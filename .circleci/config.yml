@@ -51,33 +51,10 @@ commands:
               npm install
               npm run migrations:revert
             fi
-
-orbs:
-  slack: circleci/slack@4.1       
+     
 jobs:
 
-  notify:
-    docker:
-      - image: 'cimg/base:stable'
-    steps:
-      - slack/notify:
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "plain_text",
-                      "text": "*This is a text notification*",
-                      "emoji": true
-                    }
-                  ]
-                }
-              ]
-            }
-          event: always
-          
+ 
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -110,7 +87,7 @@ jobs:
           command: |
             npm i
             npm run build
-            cpdist/.env
+            cp .env dist/.env
             pwd && ls -al
       - persist_to_workspace:
           root: ~/
