@@ -445,6 +445,6 @@ workflows:
        - test_backend:
           requires:
             - build_backend
-      - test_frontend:
+       - test_frontend:
           requires:
             - build_frontend
