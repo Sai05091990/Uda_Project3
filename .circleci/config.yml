@@ -1,4 +1,9 @@
 version: 2.1
+
+orbs:
+  node: 'circleci/node:4.1'
+  slack: circleci/slack@4.1
+  
 commands:
   dependencies:
     steps:
@@ -50,6 +55,20 @@ commands:
             fi
             
 jobs:
+
+  deploy:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          command: npm run deploy
+      - slack/notify:
+          channel: udacity_notifications
+          event: pass
+          template: success_tagged_deploy_1
+          
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -82,7 +101,7 @@ jobs:
           command: |
             npm i
             npm run build
-            cp .env dist/.env
+            cpdist/.env
             pwd && ls -al
       - persist_to_workspace:
           root: ~/
@@ -450,3 +469,5 @@ workflows:
           requires: [build-backend]
        - scan-frontend:
            requires: [build-frontend]
+       - deploy:
+          context: slack-secrets
