@@ -442,9 +442,9 @@ workflows:
     jobs:
        - build-frontend
        - build-backend
-       - test_backend:
+       - test-backend:
           requires:
-            - build_backend
-       - test_frontend:
+            - build-backend
+       - test-frontend:
           requires:
-            - build_frontend
+            - build-frontend
