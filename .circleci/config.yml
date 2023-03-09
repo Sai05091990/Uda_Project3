@@ -437,9 +437,8 @@ jobs:
             fi
             fi
 
- workflows:
-   default:
-     jobs:
+workflows:
+  default:
+    jobs:
        - build-frontend
        - build-backend
-      
