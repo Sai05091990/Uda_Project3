@@ -53,22 +53,30 @@ commands:
             fi
 
 orbs:
-  node: 'circleci/node:4.1'
   slack: circleci/slack@4.1       
 jobs:
 
-  deploy:
-    executor:
-      name: node/default
+  notify:
+    docker:
+      - image: 'cimg/base:stable'
     steps:
-      - checkout
-      - node/install-packages
-      - run:
-          command: npm run deploy
       - slack/notify:
-          channel: udacity_notifications
-          event: pass
-          template: success_tagged_deploy_1
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*This is a text notification*",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: always
           
   build-frontend:
     docker:
@@ -470,5 +478,5 @@ workflows:
           requires: [build-backend]
        - scan-frontend:
            requires: [build-frontend]
-       - deploy:
+       - notify:
           context: slack-secrets
