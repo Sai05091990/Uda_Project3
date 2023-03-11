@@ -9,7 +9,7 @@ commands:
           name: Installing necessary packages
           command: |
             yum update
-            yum install -y tar gzip curl software-properties-common
+            yum install -y tar unzip curl software-properties-common
       - run:
           name: Installing aws-cli
           command: |
