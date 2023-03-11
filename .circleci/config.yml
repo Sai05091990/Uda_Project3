@@ -8,21 +8,21 @@ commands:
       - run:
           name: Installing necessary packages
           command: |
-            sudo yum update
-            sudo yum install -y tar gzip curl software-properties-common
+            yum update
+            yum install -y tar gzip curl software-properties-common
       - run:
           name: Installing aws-cli
           command: |
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
-            sudo ./aws/install
+            ./aws/install
       - run:
           name: Installing ansible
           command: |
             #sudo add-apt-repository --yes --update ppa:ansible/ansible
             #sudo yum install ansible
-            sudo yum install epel-release
-            sudo rum install ansible
+            yum install epel-release
+            yum install ansible
   destroy-environment:
     parameters:
       workflow_id:
