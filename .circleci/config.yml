@@ -21,7 +21,7 @@ commands:
           command: |
             #sudo add-apt-repository --yes --update ppa:ansible/ansible
             #sudo yum install ansible
-            yum install epel-release
+            yum update
             yum install ansible
   destroy-environment:
     parameters:
