@@ -161,7 +161,7 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: public.ecr.aws/aws-cli/aws-cli
     steps:
       - checkout
       #- dependencies
