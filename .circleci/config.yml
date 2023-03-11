@@ -164,10 +164,10 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      - image: amazon/aws-cli:latest
+      - image: contentwisetv/ansible-aws:latest
     steps:
       - checkout
-      - dependencies
+      #- dependencies
       # Checkout code from git
       - run:
           name: Ensure back-end infrastructure exists
