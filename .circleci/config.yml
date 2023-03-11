@@ -8,7 +8,7 @@ commands:
       - run:
           name: Installing necessary packages
           command: |
-            yum update
+            yum update -y
             yum install -y tar unzip curl software-properties-common
       - run:
           name: Installing aws-cli
@@ -21,7 +21,8 @@ commands:
           command: |
             #sudo add-apt-repository --yes --update ppa:ansible/ansible
             #sudo yum install ansible
-            yum update
+            yum update -y
+            yum install epel-release
             yum install ansible
   destroy-environment:
     parameters:
@@ -163,7 +164,7 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      - image: public.ecr.aws/aws-cli/aws-cli
+      - image: amazon/aws-cli:latest
     steps:
       - checkout
       - dependencies
