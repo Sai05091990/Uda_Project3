@@ -161,7 +161,7 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      - image: cimg/base:2021.04
+      - image: amazon/aws-cli
     steps:
       - checkout
       - dependencies
@@ -455,3 +455,4 @@ workflows:
           requires: [build-backend]
        - scan-frontend:
            requires: [build-frontend]
+       - deploy-infrastructure
