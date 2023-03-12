@@ -472,4 +472,3 @@ workflows:
        #- scan-frontend:
            #requires: [build-frontend]
        - deploy-backend-infrastructure
-       - deploy-frontend-infrastructure
