@@ -26,7 +26,7 @@ commands:
             yum install ansible
             
             
-  destroy_environment:
+  destroy-environment:
     description: Destroy backend cloudformation stacks given a workflow ID.
     parameters:
       workflow_id:
