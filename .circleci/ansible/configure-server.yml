@@ -2,8 +2,6 @@
   hosts: all
   user: ubuntu
   roles:
-    - role: weareinteractive.environment
-      become: true
     - role: setup
       become: true
     - role: deploy_backend
