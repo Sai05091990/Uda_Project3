@@ -39,6 +39,7 @@ commands:
             echo "Destroying environment: <<parameters.workflow_id>> "
             aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflow_id>>
             aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.workflow_id>>
 
   revert-migrations:
     parameters:
@@ -195,6 +196,21 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       - destroy_environment:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"  
+
+  deploy_frontend_infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Deploy the frontend infrastructure using cloudformation
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/frontend.yml \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy_environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
   configure-infrastructure:
     docker:
@@ -456,3 +472,4 @@ workflows:
        #- scan-frontend:
            #requires: [build-frontend]
        - deploy_backend_infrastructure
+       - deploy_frontend_infrastructure:
