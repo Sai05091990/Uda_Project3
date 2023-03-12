@@ -170,6 +170,7 @@ jobs:
       - checkout
       - run:
           name: Deploy the backend infrastructure using cloudformation
+          no_output_timeout: 30m
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
