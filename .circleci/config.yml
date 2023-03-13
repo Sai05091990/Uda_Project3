@@ -247,9 +247,10 @@ jobs:
 
   run-migrations:
     docker:
-      - image: sleavely/node-awscli:14.x
+      - image: cimg/node:13.8.0
     steps:
       - checkout
+      - install_awscli
       - restore_cache:
           keys:
             - build-backend
@@ -268,11 +269,11 @@ jobs:
           command: |
             if grep -q "has been executed successfully"  ./backend/migrations_dump.txt   
             then
-              curl https://kvdb.io/LHFkzdfqGQiT5AocazCCLL//migration_${CIRCLE_WORKFLOW_ID:0:7} \
+              curl https://kvdb.io/BWGNQ9WSfS2fD2gGjniAhV/migration_${CIRCLE_WORKFLOW_ID:0:7} \
                 -H "X-Api-Key: ${THISDB_API_KEY}" \
                 -d "1"
             else
-              curl https://kvdb.io/LHFkzdfqGQiT5AocazCCLL//migration_${CIRCLE_WORKFLOW_ID:0:7} \
+              curl https://kvdb.io/BWGNQ9WSfS2fD2gGjniAhV/migration_${CIRCLE_WORKFLOW_ID:0:7} \
                 -H "X-Api-Key: ${THISDB_API_KEY}" \
                 -d "0"
             fi
@@ -468,3 +469,5 @@ workflows:
            #requires: [test-frontend,test-backend,scan-frontend,scan-backend]
        - configure-infrastructure:
           requires: [deploy-infrastructure]
+       - run-migrations:
+          requires: [configure-infrastructure]
