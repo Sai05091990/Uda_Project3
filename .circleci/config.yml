@@ -256,11 +256,11 @@ jobs:
             - build-backend
       - run:
           name: Run migrations
+          no_output_timeout: 20m
           command: |
             cd backend
             cat .env
-            npm i
-            npm run build
+            npm intall
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
             
