@@ -170,6 +170,7 @@ jobs:
             npm install
             npm audit fix --audit-level=critical 
 
+  
   deploy-infrastructure:
     docker:
       - image: cimg/base:stable
@@ -208,8 +209,7 @@ jobs:
             - project/.circleci/ansible/inventory.txt
             - project/.circleci/outputs/backend_url.txt
       
-      - destroy-environment:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - destroy-environment
 
 
   configure-infrastructure:
@@ -231,8 +231,7 @@ jobs:
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml 
-      - destroy-environment:
-          workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'  
+      - destroy-environment 
 
 
 
