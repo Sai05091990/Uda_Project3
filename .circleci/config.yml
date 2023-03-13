@@ -1,30 +1,6 @@
 version: 2.1
 
-
-  
-commands:
-  dependencies:
-    steps:
-      - run:
-          name: Installing necessary packages
-          command: |
-            yum update -y
-            yum install -y tar unzip curl software-properties-common
-      - run:
-          name: Installing aws-cli
-          command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            ./aws/install --update
-      - run:
-          name: Installing ansible
-          command: |
-            #sudo add-apt-repository --yes --update ppa:ansible/ansible
-            #sudo yum install ansible
-            yum update -y
-            yum install epel-release
-            yum install ansible
-            
+commands:          
   install_awscli:
     description: Install AWS CLI v2
     steps:
@@ -56,10 +32,11 @@ commands:
             sudo apt install -y nodejs         
             
   destroy-environment:
-    description: Destroy backend cloudformation stacks given a workflow ID.
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-      workflow_id:
+      Workflow_ID:
         type: string
+        default: ${CIRCLE_WORKFLOW_ID:0:7}
     steps:
       - run:
           name: Destroy environments
@@ -143,7 +120,7 @@ jobs:
           keys:
             - build-backend
       - run:
-          name: Testing backend
+          name: back-end Unit Test
           command: |
             cd backend
             npm install
@@ -157,7 +134,7 @@ jobs:
           keys:
             - build-frontend
       - run:
-          name: Testing frontend
+          name: Front-end Unit Test
           command: |
             cd frontend
             npm install
@@ -195,9 +172,10 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: cimg/base:stable
     steps:
       - checkout
+      - install_awscli
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -230,8 +208,8 @@ jobs:
             - project/.circleci/ansible/inventory.txt
             - project/.circleci/outputs/backend_url.txt
       
-     # - destroy-environment:
-     #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - destroy-environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
 
   configure-infrastructure:
@@ -243,7 +221,7 @@ jobs:
       - install_ansible
       # Add ssh keys with fingerprint
       - add_ssh_keys:
-          fingerprints: ["b3:36:ad:de:28:5d:91:8e:e1:f8:88:28:04:86:47:60"]
+          fingerprints: [ "b3:36:ad:de:28:5d:91:8e:e1:f8:88:28:04:86:47:60" ]
       - attach_workspace:
           at: ~/
       - run:
@@ -253,8 +231,8 @@ jobs:
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml 
-      #- destroy-environment:
-       #    workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'  
+      - destroy-environment:
+          workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'  
 
 
 
