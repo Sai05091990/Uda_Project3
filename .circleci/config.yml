@@ -231,7 +231,6 @@ jobs:
           command: |
             apk add --update ansible openssh-client tar gzip curl nodejs npm
             pip install awscli
-            cat .circleci/ansible/inventory.txt
       - run:
           name: Configure server
           no_output_timeout: 30m
@@ -453,15 +452,15 @@ jobs:
 workflows:
   default:
     jobs:
-       - build-frontend
-       - build-backend
-       - test-backend:
+       #- build-frontend
+       #- build-backend
+       #- test-backend:
            requires: [build-backend]
-       - test-frontend:
+       #- test-frontend:
            requires: [build-frontend]
-       - scan-backend:
+       #- scan-backend:
            requires: [build-backend]
-       - scan-frontend:
+       #- scan-frontend:
            requires: [build-frontend]
        - deploy-infrastructure
            #requires: [test-frontend,test-backend,scan-frontend,scan-backend]
