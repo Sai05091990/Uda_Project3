@@ -231,7 +231,7 @@ jobs:
           command: |
             cd .circleci/ansible
             cat inventory.txt
-            ansible-playbook -i inventory.txt configure-server.yml --private-key=".circleci/ansible/udakeypair.pem"
+            ansible-playbook -i inventory.txt configure-server.yml --private-key=udakeypair.pem
      # - destroy-environment 
 
 
