@@ -215,16 +215,21 @@ jobs:
 
   configure-infrastructure:
     docker:
-      - image: ju2wheels/ansible:2.x-debian-7
+      - image: python:3.9.0-alpine
     steps:
       - checkout
-      - install_awscli
-      - install_ansible
+      #- install_awscli
+      #- install_ansible
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: [ "b3:36:ad:de:28:5d:91:8e:e1:f8:88:28:04:86:47:60" ]
       - attach_workspace:
           at: ~/
+      - run:
+          name: Install Dependencies 
+          working_directory: .circleci/ansible
+          command: |
+          apk add --update ansible
       - run:
           name: Configure server
           no_output_timeout: 30m
