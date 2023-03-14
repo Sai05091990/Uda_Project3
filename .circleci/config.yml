@@ -142,7 +142,7 @@ jobs:
             
   scan-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:14.18.1
     steps:
       - checkout
       - restore_cache:
@@ -159,7 +159,7 @@ jobs:
 
   scan-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:14.18.1
     steps:
       - checkout
       - restore_cache:
@@ -258,8 +258,7 @@ jobs:
           name: Run migrations
           no_output_timeout: 20m
           command: |
-            cd .circleci/backend
-            cat .env
+            cd backend
             npm install
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
@@ -284,13 +283,19 @@ jobs:
 
   deploy-frontend:
     docker:
-      - image: cimg/node:13.14.0
+      - image: cimg/base:stable
     steps:
       - checkout
+      - install_awscli
+      - install_nodejs
       - restore_cache:
           keys:
             - build-frontend
-      - dependencies
+      - run:
+          name: Install dependencies
+          command: |
+            cd frontend
+            npm install
       - run:
           name: Get backend url
           command: |
@@ -305,15 +310,7 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
-      # - destroy-environment:
-      #     workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
-      # - revert-migrations:
-      #     workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
-  #     # Here's where you will add some code to rollback on failure
-  #     - destroy-environment:
-  #         workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-#       # Here's where you will add some code to rollback on failure      
-
+     
 
   deploy-backend:
     docker:
@@ -455,19 +452,22 @@ jobs:
 workflows:
   default:
     jobs:
-      #- build-frontend
-      #- build-backend
-      #- test-backend:
-      #    requires: [build-backend]
-      #- test-frontend:
-      #    requires: [build-frontend]
-      #- scan-backend:
-      #    requires: [build-backend]
-      #- scan-frontend:
-      #    requires: [build-frontend]
-      #- deploy-infrastructure
-      #    #requires: [test-frontend,test-backend,scan-frontend,scan-backend]
-      #- configure-infrastructure:
-      #   requires: [deploy-infrastructure]
-       - run-migrations
-         # requires: [configure-infrastructure]
+      - build-frontend
+      - build-backend
+      - test-backend:
+          requires: [build-backend]
+      - test-frontend:
+          requires: [build-frontend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+      - deploy-infrastructure
+          #requires: [test-frontend,test-backend,scan-frontend,scan-backend]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+      - run-migrations
+          requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
+          
