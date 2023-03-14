@@ -482,5 +482,5 @@ workflows:
       - deploy-frontend:
           requires: [run-migrations]
       - deploy-backend:
-          required: [run-migrations]
+          requires: [run-migrations]
           
