@@ -146,7 +146,7 @@ jobs:
             
   scan-backend:
     docker:
-      - image: circleci/node:14.18.1
+      - image: circleci/node:16
     steps:
       - checkout
       - restore_cache:
@@ -159,11 +159,11 @@ jobs:
             npm install
             npm audit fix --force --audit-level=critical
             npm audit --audit-level=critical
-            npm audit fix
+            npm audit fix --force
 
   scan-frontend:
     docker:
-      - image: circleci/node:14.18.1
+      - image: circleci/node:16
     steps:
       - checkout
       - restore_cache:
@@ -176,7 +176,7 @@ jobs:
             npm install
             npm audit fix --force --audit-level=critical
             npm audit --audit-level=critical
-            npm audit fix
+            npm audit fix --force
 
   
   
