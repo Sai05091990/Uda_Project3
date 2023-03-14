@@ -363,7 +363,7 @@ jobs:
 
       # - destroy-environment:
 
-  smoke-test-backend:
+  backend-smoke-test:
     docker:
       - image: python:3.7-alpine3.11
     steps:
@@ -382,7 +382,7 @@ jobs:
              API_URL="http://${BACKEND_IP}:3030"
              curl "${API_URL}/api/status"
 
-  smoke-test-frontend:
+  frontend-smoke-test:
     docker:
       - image: python:3.7-alpine3.11
     steps:
@@ -399,11 +399,11 @@ jobs:
           command: |
             URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-west-2.amazonaws.com"             
             echo ${URL} 
-            if curl -s ${URL} | grep "Welcome"
+            if curl -s ${URL} | grep "All ok"
             then
-              exit 0
+              return 0
             else
-              exit 1
+              return 1
             fi           
       # - destroy-environment:
       #     workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
@@ -483,4 +483,8 @@ workflows:
           requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
+      - backend-smoke-test:
+          requires: [deploy-backend]
+      - frontend-smoke-test:
+          requires: [deploy-frontend]
           
