@@ -274,7 +274,7 @@ jobs:
       - run:
           name: Sending migration status to kvdb
           command: |
-            if grep -q "has been executed successfully"  ./backend/migrations_dump.txt   
+            if grep -q "has been executed successfully"  ~/project/backend/migrations_dump.txt  
             then
               curl https://kvdb.io/BWGNQ9WSfS2fD2gGjniAhV/migration_${CIRCLE_WORKFLOW_ID:0:7} \
                 -H "X-Api-Key: ${THISDB_API_KEY}" \
