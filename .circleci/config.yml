@@ -156,8 +156,9 @@ jobs:
           name: Scanning backend
           command: |
             cd backend
-            npm install
-            npm audit fix --force --audit-level=critical
+            npm install &&
+            npm audit fix --audit-level=critical --force &&
+            npm audit fix --force &&
             npm audit --audit-level=critical
 
   scan-frontend:
@@ -172,12 +173,12 @@ jobs:
           name: Scanning frontend
           command: |
             cd frontend
-            npm install
-            npm audit fix --force --audit-level=critical
+            npm install &&
+            npm audit fix --audit-level=critical --force &&
+            npm audit fix --force &&
             npm audit --audit-level=critical
 
-  
-  
+   
   
   deploy-infrastructure:
     docker:
@@ -253,7 +254,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: circleci/node:13.18.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - install_awscli
