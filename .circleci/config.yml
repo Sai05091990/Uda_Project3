@@ -299,7 +299,7 @@ jobs:
   
   deploy-frontend:
     docker:
-      - image: cimg/base:stable
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - install_awscli
@@ -317,6 +317,7 @@ jobs:
           command: |
              BACKEND_IP=$(aws cloudformation describe-stacks --stack-name udapeople-backend-"${CIRCLE_WORKFLOW_ID:0:7}" --query "Stacks[0].Outputs[0].OutputValue" --output text)
              API_URL="http://${BACKEND_IP}:3030"
+             echo $API_URL
              echo "API_URL=${API_URL}" >> frontend/.env
       - run:
           name: Deploy frontend objects
@@ -335,7 +336,7 @@ jobs:
   
   deploy-backend:
     docker:
-      - image: cimg/base:stable    
+      - image: circleci/node:13.8.0   
     steps:
       - checkout
       - install_ansible
