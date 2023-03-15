@@ -321,9 +321,7 @@ jobs:
               --filters Name=tag:aws:cloudformation:stack-name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
               --output text)
              API_URL="http://${BACKEND_IP}:3030"
-             cat frontend/.env
              echo "API_URL=${API_URL}" >> frontend/.env
-             cat frontend/.env
       - run:
           name: Deploy frontend objects
           working_directory: ./frontend
