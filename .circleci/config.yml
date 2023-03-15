@@ -146,7 +146,7 @@ jobs:
             
   scan-backend:
     docker:
-      - image: circleci/node:16
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -158,10 +158,11 @@ jobs:
             cd backend
             npm install
             npm audit fix --force --audit-level=critical
+            npm audit --audit-level=critical
 
   scan-frontend:
     docker:
-      - image: circleci/node:16
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -173,6 +174,7 @@ jobs:
             cd frontend
             npm install
             npm audit fix --force --audit-level=critical
+            npm audit --audit-level=critical
 
   
   
@@ -249,13 +251,9 @@ jobs:
       - destroy-environment:
           workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
 
-
-
-  
-  
   run-migrations:
     docker:
-      - image: circleci/node:13.18
+      - image: circleci/node:13.18.0
     steps:
       - checkout
       - install_awscli
@@ -264,9 +262,9 @@ jobs:
             - build-backend
       - run:
           name: Run migrations
+          working_directory: ./backend
           no_output_timeout: 20m
           command: |
-            cd backend
             npm install
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
@@ -437,10 +435,10 @@ jobs:
             else
               return 1
             fi           
-      - revert-migrations:
-          workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
-      - destroy-environment:
-          workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
+     # - revert-migrations:
+     #     workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
+     # - destroy-environment:
+     #     workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
  
   
   cloudfront-update:
@@ -466,10 +464,10 @@ jobs:
               --template-file .circleci/files/cloudfront.yml \
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --stack-name InitialStack
-      - revert-migrations:
-          workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
-      - destroy-environment:
-          workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
+      #- revert-migrations:
+      #    workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
+      #- destroy-environment:
+      #    workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
 
   cleanup-phase:
     docker:
