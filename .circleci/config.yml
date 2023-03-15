@@ -339,9 +339,6 @@ jobs:
       - image: circleci/node:13.8.0   
     steps:
       - checkout
-      - install_ansible
-      - install_awscli
-      - install_nodejs
       - add_ssh_keys:
           fingerprints: [ "39:9c:8c:be:3e:13:b9:cb:45:56:27:47:2b:e9:15:ef" ]
       - attach_workspace: 
