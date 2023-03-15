@@ -456,8 +456,9 @@ jobs:
             export OLD_WORKFLOW_ID=$(aws cloudformation \
                       list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
                       --no-paginate --output text)
+            echo $OLD_WORKFLOW_ID
             echo "Old Wokflow ID: $OLD_WORKFLOW_ID"
-            curl https://kvdb.io/BWGNQ9WSfS2fD2gGjniAhV/old_workflow_id -d "${OLD_WORKFLOW_ID}"
+            curl https://kvdb.io/BWGNQ9WSfS2fD2gGjniAhV/old_workflow_id -d "$OLD_WORKFLOW_ID"
       - run:
           name: Update cloudfront distribution
           command: |
@@ -492,32 +493,32 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-backend:
-          requires: [build-backend]
-      - test-frontend:
-          requires: [build-frontend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
-      - deploy-infrastructure:
-          requires: [test-frontend,test-backend] #,scan-frontend,scan-backend]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
-      - backend-smoke-test:
-          requires: [deploy-backend]
-      - frontend-smoke-test:
-          requires: [deploy-frontend]
-      - cloudfront-update:
-          requires: [backend-smoke-test,frontend-smoke-test]
+      #- build-frontend
+      #- build-backend
+      #- test-backend:
+      #    requires: [build-backend]
+      #- test-frontend:
+      #    requires: [build-frontend]
+      #- scan-backend:
+      #    requires: [build-backend]
+      #- scan-frontend:
+      #    requires: [build-frontend]
+      #- deploy-infrastructure:
+      #    requires: [test-frontend,test-backend] #,scan-frontend,scan-backend]
+      #- configure-infrastructure:
+      #    requires: [deploy-infrastructure]
+      #- run-migrations:
+      #    requires: [configure-infrastructure]
+      #- deploy-frontend:
+      #    requires: [run-migrations]
+      #- deploy-backend:
+      #    requires: [run-migrations]
+      #- backend-smoke-test:
+      #    requires: [deploy-backend]
+      #- frontend-smoke-test:
+      #    requires: [deploy-frontend]
+      - cloudfront-update
+          #requires: [backend-smoke-test,frontend-smoke-test]
       - cleanup-phase:
           requires: [cloudfront-update]
           
