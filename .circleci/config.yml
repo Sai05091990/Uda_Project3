@@ -321,6 +321,7 @@ jobs:
               --filters Name=tag:aws:cloudformation:stack-name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
               --output text)
              API_URL="http://${BACKEND_IP}:3030"
+             echo $API_URL
              echo "API_URL=${API_URL}" >> frontend/.env
       - run:
           name: Deploy frontend objects
@@ -483,12 +484,12 @@ jobs:
               --template-file .circleci/files/cloudfront.yml \
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --stack-name InitialStack
-      #- revert-migrations:
-      #    workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
-      #- destroy-environment:
-      #    workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
+      - revert-migrations:
+          workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
+      - destroy-environment:
+          workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
 
-  cleanup-phase:
+  cleanup-Infra:
     docker:
       - image: cimg/base:stable
     steps:
@@ -496,7 +497,7 @@ jobs:
       - install_awscli
       - install_nodejs
       - run:
-          name: Remove old stacks and files
+          name: Delete old stacks 
           command: |
             export STACKS=($(aws cloudformation list-stacks \
                 --query "StackSummaries[*].StackName" \
@@ -547,6 +548,6 @@ workflows:
           requires: [deploy-frontend]
       - cloudfront-update:
           requires: [backend-smoke-test,frontend-smoke-test]
-     # - cleanup-phase:
-     #     requires: [cloudfront-update]
+      - cleanup-Infra:
+          requires: [cloudfront-update]
           
